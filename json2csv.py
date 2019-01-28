@@ -11,7 +11,7 @@ print("JSON file loaded !!")
     
 length = len(JSONArray)
 
-labels = ['Timestamp', 'Source_IP','Destination_IP','ICMPv6_Code','Version','Rank']
+labels = ['Timestamp', 'Timestamp_epoch','Source_IP','Destination_IP','ICMPv6_Code','Version','Rank']
 
 df = pd.DataFrame(columns = labels)
 df.to_csv('json_parsed.csv', header = True, index = False)
@@ -21,7 +21,12 @@ for obj in range(length):
         timestamp = JSONArray[obj]['_source']['layers']['frame']['frame.time']
     except Exception:
         timestamp = "-"
-        
+
+    try:
+        timestamp_epoch = JSONArray[obj]['_source']['layers']['frame']['frame.time_epoch']
+    except Exception:
+        timestamp_epoch = "-"
+
     try:
         ipv6_src_host = JSONArray[obj]['_source']['layers']['ipv6']['ipv6.src_host']
     except Exception:
@@ -47,7 +52,7 @@ for obj in range(length):
     except Exception:
         icmpv6_rpl_dio_rank = "-"
 
-    record = [(timestamp, ipv6_src_host, ipv6_dst_host, icmpv6_code, icmpv6_rpl_dio_version, icmpv6_rpl_dio_rank)]
+    record = [(timestamp, timestamp_epoch, ipv6_src_host, ipv6_dst_host, icmpv6_code, icmpv6_rpl_dio_version, icmpv6_rpl_dio_rank)]
     
     df = pd.DataFrame.from_records(record, columns=labels)
     with open('json_parsed.csv', 'a', encoding='utf-8') as f:
@@ -56,5 +61,4 @@ for obj in range(length):
         
 print("All", len(JSONArray), "records written successsfully !! :)")
 print("Columns of CSV are", list(df))
-
 
