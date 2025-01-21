@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import os
 
 def parse(input_file_path, output_folder):
     """
@@ -21,8 +22,11 @@ def parse(input_file_path, output_folder):
 
     labels = ['Timestamp', 'Timestamp_epoch','Source_IP','Destination_IP','ICMPv6_Code','Version','Rank']
 
+    file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
+    new_file_name = output_folder + file_path_without_format + '.csv'
+
     df = pd.DataFrame(columns = labels)
-    df.to_csv('json_parsed.csv', header = True, index = False)
+    df.to_csv(new_file_name, header = True, index = False)
     for obj in range(length):
 
         try:
@@ -63,7 +67,7 @@ def parse(input_file_path, output_folder):
         record = [(timestamp, timestamp_epoch, ipv6_src_host, ipv6_dst_host, icmpv6_code, icmpv6_rpl_dio_version, icmpv6_rpl_dio_rank)]
         
         df = pd.DataFrame.from_records(record, columns=labels)
-        with open('json_parsed.csv', 'a', encoding='utf-8') as f:
+        with open(new_file_name, 'a', encoding='utf-8') as f:
             print("Writing dataframe ", obj, " to CSV")
             df.to_csv(f, header=False, index = False)
             
