@@ -4,7 +4,7 @@ import os
 
 def parse(input_file_path, output_folder):
     """
-    Purpose: TODO
+    A function to parse JSON PCAP-style files to a CSV format
     """
 
     # check if path is empty then ask user to provide it
