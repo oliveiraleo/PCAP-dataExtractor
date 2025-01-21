@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-def parse(input_file_path):
+def parse(input_file_path, output_folder):
     """
     Purpose: TODO
     """
@@ -10,9 +10,9 @@ def parse(input_file_path):
     if (not input_file_path):
         print("[ERRO] The file path was not provided!")
         print("[INFO] Please, provide the file path below")
-        file_path = input("> ")
+        input_file_path = input("> ")
 
-    JSON_data=open(file_path).read()
+    JSON_data=open(input_file_path).read()
     print("JSON file loaded !!")
     JSONArray = json.loads(JSON_data)
     print("JSON file loaded !!")
@@ -70,4 +70,4 @@ def parse(input_file_path):
     print("All", len(JSONArray), "records written successsfully !! :)")
     print("Columns of CSV are", list(df))
 
-parse("")
+parse("", "./")
