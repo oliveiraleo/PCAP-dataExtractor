@@ -1,10 +1,16 @@
 import json
 import pandas as pd
 
-def parse(file_path):
+def parse(input_file_path):
     """
     Purpose: TODO
     """
+
+    # check if path is empty then ask user to provide it
+    if (not input_file_path):
+        print("[ERRO] The file path was not provided!")
+        print("[INFO] Please, provide the file path below")
+        file_path = input("> ")
 
     JSON_data=open(file_path).read()
     print("JSON file loaded !!")
