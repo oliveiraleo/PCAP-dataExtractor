@@ -226,7 +226,7 @@ def parse(input_file_path, output_folder):
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
-            print("[INFO] Writing dataframe ", obj, "of", length, "(", round(0.1+obj*100/length, 1) ,"%) to CSV")
+            print("[INFO] Writing dataframe", obj, "of", length, "(", round(obj*100/length, 1) ,"% ) to CSV")
             df.to_csv(f, header=False, index = False)
             
     print("[INFO] All", length, "records were successfully written")
