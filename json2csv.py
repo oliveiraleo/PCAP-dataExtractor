@@ -23,7 +23,7 @@ def parse(input_file_path, output_folder):
 
     labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
             'Source_port', 'Destination_port', 'TCP_completeness', 'TCP_compl_reset', 'TCP_compl_fin', 'TCP_compl_data', 'TCP_compl_ack', 
-            'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_hex', 'TCP_flags_str',
+            'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_bin', 'TCP_flags_str', 'TCP_window_size', 'TCP_window_size_scale',
             'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'TCP_header_length', 'Data_length']
 
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
@@ -148,6 +148,16 @@ def parse(input_file_path, output_folder):
             tcp_flags_str = JSONArray[obj]['_source']['layers']['tcp']['tcp.flags_tree']['tcp.flags.str']
         except Exception:
             tcp_flags_str = None
+
+        try:
+            tcp_window_size = JSONArray[obj]['_source']['layers']['tcp']['tcp.window_size']
+        except Exception:
+            tcp_window_size = None
+
+        try:
+            tcp_window_size_scalefactor = JSONArray[obj]['_source']['layers']['tcp']['tcp.window_size_scalefactor']
+        except Exception:
+            tcp_window_size_scalefactor = None
         # TCP only end #
 
         try:
@@ -197,7 +207,7 @@ def parse(input_file_path, output_folder):
         record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
                 src_port, dst_port, tcp_completeness, tcp_completeness_reset, tcp_completeness_fin,
                 tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, tcp_completeness_syn,
-                tcp_completeness_str, tcp_flags_hex, tcp_flags_str,
+                tcp_completeness_str, tcp_flags_bin, tcp_flags_str, tcp_window_size, tcp_window_size_scalefactor,
                 frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
                  ip_ttl, TCP_header_length, data_length)]
 
