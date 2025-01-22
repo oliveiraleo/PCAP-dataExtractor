@@ -117,7 +117,7 @@ def parse(input_file_path, output_folder):
             print("[INFO] Writing dataframe ", obj, "of", length, "(", round(0.1+obj*100/length, 1) ,"%) to CSV")
             df.to_csv(f, header=False, index = False)
             
-    print("[INFO] All", len(JSONArray), "records were successfully written")
+    print("[INFO] All", length, "records were successfully written")
     print("[DEBU] Columns of CSV are", list(df)) # DEBUG
 
 parse("", "./")
