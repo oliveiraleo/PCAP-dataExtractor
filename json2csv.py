@@ -23,8 +23,8 @@ def parse(input_file_path, output_folder):
 
     labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
             'Source_port', 'Destination_port', 'TCP_completeness', 'TCP_compl_reset', 'TCP_compl_fin', 'TCP_compl_data', 'TCP_compl_ack', 
-            'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str',
-            'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'Data_length']
+            'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_hex', 'TCP_flags_str',
+            'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'TCP_header_length', 'Data_length']
 
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
     new_file_name = output_folder + file_path_without_format + '.csv'
@@ -93,6 +93,7 @@ def parse(input_file_path, output_folder):
             except Exception:
                 dst_port = None
         
+        # TCP only begin #
         try:
             tcp_completeness = JSONArray[obj]['_source']['layers']['tcp']['tcp.completeness']
         except Exception:
@@ -136,6 +137,20 @@ def parse(input_file_path, output_folder):
             tcp_completeness_str = None
 
         try:
+            tcp_flags_hex = JSONArray[obj]['_source']['layers']['tcp']['tcp.flags']
+            # if needed, adjust 010b and 10 to the desired length below
+            # see alternatives here: https://www.geeksforgeeks.org/python-ways-to-convert-hex-into-binary/
+            tcp_flags_bin = "{0:010b}".format(int(str(tcp_flags_hex), 10))
+        except Exception:
+            tcp_flags_bin = None
+        
+        try:
+            tcp_flags_str = JSONArray[obj]['_source']['layers']['tcp']['tcp.flags_tree']['tcp.flags.str']
+        except Exception:
+            tcp_flags_str = None
+        # TCP only end #
+
+        try:
             frame_protocols = JSONArray[obj]['_source']['layers']['frame']['frame.protocols']
         except Exception:
             frame_protocols = None
@@ -165,6 +180,13 @@ def parse(input_file_path, output_folder):
         except Exception:
             ip_ttl = None
 
+        # TCP only begin #
+        try:
+            TCP_header_length = JSONArray[obj]['_source']['layers']['tcp']['tcp.hdr_len']
+        except Exception:
+            TCP_header_length = None
+        # TCP only end #
+
         # UDP only begin #
         try:
             data_length = JSONArray[obj]['_source']['layers']['data']['data.len']
@@ -175,9 +197,9 @@ def parse(input_file_path, output_folder):
         record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
                 src_port, dst_port, tcp_completeness, tcp_completeness_reset, tcp_completeness_fin,
                 tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, tcp_completeness_syn,
-                tcp_completeness_str,
+                tcp_completeness_str, tcp_flags_hex, tcp_flags_str,
                 frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
-                 ip_ttl, data_length)]
+                 ip_ttl, TCP_header_length, data_length)]
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
