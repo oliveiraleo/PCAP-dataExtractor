@@ -120,4 +120,4 @@ def parse(input_file_path, output_folder):
     print("[INFO] All", length, "records were successfully written")
     print("[DEBU] Columns of CSV are", list(df)) # DEBUG
 
-parse("", "./")
+# parse("", "./") # Enable this line to run in "stand alone" mode (e.g. not importing as python module)
