@@ -24,8 +24,8 @@ tshark -r input.pcap -T json > output.json"
 
 ### Tested software environment
 
-Python 3.13.1 (may work with older versions too)
-Pandas 2.2.3
+- Python 3.13.1 (may work with older versions too)
+- Pandas 2.2.3
 
 ## Usage
 
