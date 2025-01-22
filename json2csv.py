@@ -22,6 +22,7 @@ def parse(input_file_path, output_folder):
     print("[DEBU]", length, "data frames to be converted") # DEBUG
 
     labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
+            'Source_port', 'Destination_port',
             'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'Data_length']
 
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
@@ -67,11 +68,23 @@ def parse(input_file_path, output_folder):
         except Exception:
             header_len = None
 
+        # UDP only begin #
         try:
             payload_len = JSONArray[obj]['_source']['layers']['udp']['udp.length']
             # TODO get other payload lenghts from other protocols too
         except Exception:
             payload_len = None
+
+        try:
+            src_port = JSONArray[obj]['_source']['layers']['udp']['udp.srcport']
+        except Exception:
+            src_port = None
+        
+        try:
+            dst_port = JSONArray[obj]['_source']['layers']['udp']['udp.dstport']
+        except Exception:
+            dst_port = None
+        # UDP only end #
 
         try:
             frame_protocols = JSONArray[obj]['_source']['layers']['frame']['frame.protocols']
@@ -103,12 +116,15 @@ def parse(input_file_path, output_folder):
         except Exception:
             ip_ttl = None
 
+        # UDP only begin #
         try:
             data_length = JSONArray[obj]['_source']['layers']['data']['data.len']
         except Exception:
             data_length = None
+        # UDP only end #
 
-        record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len, 
+        record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
+                src_port, dst_port, 
                 frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
                  ip_ttl, data_length)]
 
