@@ -20,7 +20,8 @@ def parse(input_file_path, output_folder):
         
     length = len(JSONArray)
 
-    labels = ['Timestamp', 'Timestamp_epoch','Source_IP','Destination_IP','ICMPv6_Code','Version','Rank']
+    labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
+            'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'Data_length']
 
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
     new_file_name = output_folder + file_path_without_format + '.csv'
@@ -30,42 +31,86 @@ def parse(input_file_path, output_folder):
     for obj in range(length):
 
         try:
-            timestamp = JSONArray[obj]['_source']['layers']['frame']['frame.time']
+            pkt_number = JSONArray[obj]['_source']['layers']['frame']['frame.number']
         except Exception:
             timestamp = "-"
 
         try:
-            timestamp_epoch = JSONArray[obj]['_source']['layers']['frame']['frame.time_epoch']
+            timestamp = JSONArray[obj]['_source']['layers']['frame']['frame.time_relative']
         except Exception:
-            timestamp_epoch = "-"
+            timestamp = "-"
 
         try:
-            ipv6_src_host = JSONArray[obj]['_source']['layers']['ipv6']['ipv6.src_host']
+             ipv4_ip_src = JSONArray[obj]['_source']['layers']['ip']['ip.src']
         except Exception:
-            ipv6_src_host = "-"
+            ipv4_ip_src = "-"
 
         try:
-            ipv6_dst_host = JSONArray[obj]['_source']['layers']['ipv6']['ipv6.dst_host']
+            ipv4_ip_dst = JSONArray[obj]['_source']['layers']['ip']['ip.dst']
         except Exception:
-            ipv6_dst_host = "-"
+            ipv4_ip_dst = "-"
 
         try:
-            icmpv6_code = JSONArray[obj]['_source']['layers']['icmpv6']['icmpv6.code']
+            frame_type = JSONArray[obj]['_source']['layers']['frame']['frame.encap_type']
         except Exception:
-            icmpv6_code = "-"
+            frame_type = "-"
+            # more info on that: https://gitlab.com/wireshark/wireshark/-/blame/master/wiretap/wtap.h#L87
 
         try:
-            icmpv6_rpl_dio_version = JSONArray[obj]['_source']['layers']['icmpv6']['icmpv6.rpl.dio.version']
+            frame_len = JSONArray[obj]['_source']['layers']['frame']['frame.len']
         except Exception:
-            icmpv6_rpl_dio_version = "-"
+            frame_len = "-"
 
         try:
-            icmpv6_rpl_dio_rank = JSONArray[obj]['_source']['layers']['icmpv6']['icmpv6.rpl.dio.rank']
+            header_len = JSONArray[obj]['_source']['layers']['ip']['ip.hdr_len']
         except Exception:
-            icmpv6_rpl_dio_rank = "-"
+            header_len = "-"
 
-        record = [(timestamp, timestamp_epoch, ipv6_src_host, ipv6_dst_host, icmpv6_code, icmpv6_rpl_dio_version, icmpv6_rpl_dio_rank)]
+        try:
+            payload_len = JSONArray[obj]['_source']['layers']['udp']['udp.length']
+            # TODO get other payload lenghts from other protocols too
+        except Exception:
+            payload_len = "-"
+
+        try:
+            frame_protocols = JSONArray[obj]['_source']['layers']['frame']['frame.protocols']
+        except Exception:
+            frame_protocols = "-"
+
+        try:
+            ip_protocols = JSONArray[obj]['_source']['layers']['ip']['ip.proto']
+        except Exception:
+            ip_protocols = "-"
+
+        try:
+            ip_flag_reserved_bit = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.rb']
+        except Exception:
+            ip_flag_reserved_bit = "-"
+
+        try:
+            ip_flag_dont_fragment = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.df']
+        except Exception:
+            ip_flag_dont_fragment = "-"
+
+        try:
+            ip_flag_more_fragments = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.mf']
+        except Exception:
+            ip_flag_more_fragments = "-"
         
+        try:
+            ip_ttl = JSONArray[obj]['_source']['layers']['ip']['ip.ttl']
+        except Exception:
+            ip_ttl = "-"
+
+        try:
+            data_length = JSONArray[obj]['_source']['layers']['data']['data.len']
+        except Exception:
+            data_length = "-"
+
+        record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len, 
+                frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
+                 ip_ttl, data_length)]
+
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
             print("Writing dataframe ", obj, " to CSV")
