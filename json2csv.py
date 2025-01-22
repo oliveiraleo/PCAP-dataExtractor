@@ -193,9 +193,9 @@ def parse(input_file_path, output_folder):
 
         # TCP only begin #
         try:
-            TCP_header_length = JSONArray[obj]['_source']['layers']['tcp']['tcp.hdr_len']
+            tcp_header_length = JSONArray[obj]['_source']['layers']['tcp']['tcp.hdr_len']
         except Exception:
-            TCP_header_length = None
+            tcp_header_length = None
         # TCP only end #
 
         # UDP only begin #
@@ -222,7 +222,7 @@ def parse(input_file_path, output_folder):
                 tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, tcp_completeness_syn,
                 tcp_completeness_str, tcp_flags_bin, tcp_flags_str, tcp_window_size, tcp_window_size_scalefactor,
                 frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
-                 ip_ttl, TCP_header_length, data_length, quic_packet_length, quic_length)]
+                 ip_ttl, tcp_header_length, data_length, quic_packet_length, quic_length)]
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
