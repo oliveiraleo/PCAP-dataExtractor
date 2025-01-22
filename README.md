@@ -15,15 +15,36 @@ Step 3: Execute json2pcap.py
 
 <!-- TODO Update the text above -->
 
-## Note
+## Notes
 
-The older version of the code may be used after adapting the column labels to the new environment
+### Regarding the implementations
 
-The current version was designed to be used as a Python module
+The older version (e.g. on [this commit](https://github.com/oliveiraleo/PCAP-dataExtractor/blob/a6d697ed9eff5fbc10d9831ad1b31af76d8aee3a/json2csv.py) or even [the original one](https://github.com/abhiverma866/PCAP-dataExtractor)) of the code may be used after adapting the column labels to the new environment
+
+The current version was designed to be used as a Python module, however changes might be also required to adapt to your input files
+
+### Creating the JSON files
+
+Wireshark has a feature to export PCAP capture files to JSON. Navigate through the menus listed below:
+
+`File -> Export Packet Dissections -> As JSON ...`
+
+Or you can use tshark for that:
+
+```
+tshark -r input.pcap -T json > output.json"
+```
+
+### Tested software environment
+
+Python 3.13.1 (may work with older versions too)
+Pandas 2.2.3
 
 ## Usage
 
-TODO
+To use in stand alone mode, clone the repository, uncomment the last line of python file and install the requirements
+
+Or import it (e.g. `from json2csv import parse`)
 
 ## License
 
