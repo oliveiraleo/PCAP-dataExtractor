@@ -14,11 +14,12 @@ def parse(input_file_path, output_folder):
         input_file_path = input("> ")
 
     JSON_data=open(input_file_path).read()
-    print("JSON file loaded !!")
+    print("[INFO] JSON file opened successfully")
     JSONArray = json.loads(JSON_data)
-    print("JSON file loaded !!")
+    print("[INFO] JSON data imported successfully")
         
     length = len(JSONArray)
+    print("[DEBU]", length, "data frames to be converted") # DEBUG
 
     labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
             'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'Data_length']
@@ -113,10 +114,10 @@ def parse(input_file_path, output_folder):
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
-            print("Writing dataframe ", obj, " to CSV")
+            print("[INFO] Writing dataframe ", obj, " to CSV")
             df.to_csv(f, header=False, index = False)
             
-    print("All", len(JSONArray), "records written successsfully !! :)")
-    print("Columns of CSV are", list(df))
+    print("[INFO] All", len(JSONArray), "records were successfully written")
+    print("[DEBU] Columns of CSV are", list(df)) # DEBUG
 
 parse("", "./")
