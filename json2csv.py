@@ -33,79 +33,79 @@ def parse(input_file_path, output_folder):
         try:
             pkt_number = JSONArray[obj]['_source']['layers']['frame']['frame.number']
         except Exception:
-            timestamp = "-"
+            timestamp = None
 
         try:
             timestamp = JSONArray[obj]['_source']['layers']['frame']['frame.time_relative']
         except Exception:
-            timestamp = "-"
+            timestamp = None
 
         try:
              ipv4_ip_src = JSONArray[obj]['_source']['layers']['ip']['ip.src']
         except Exception:
-            ipv4_ip_src = "-"
+            ipv4_ip_src = None
 
         try:
             ipv4_ip_dst = JSONArray[obj]['_source']['layers']['ip']['ip.dst']
         except Exception:
-            ipv4_ip_dst = "-"
+            ipv4_ip_dst = None
 
         try:
             frame_type = JSONArray[obj]['_source']['layers']['frame']['frame.encap_type']
         except Exception:
-            frame_type = "-"
+            frame_type = None
             # more info on that: https://gitlab.com/wireshark/wireshark/-/blame/master/wiretap/wtap.h#L87
 
         try:
             frame_len = JSONArray[obj]['_source']['layers']['frame']['frame.len']
         except Exception:
-            frame_len = "-"
+            frame_len = None
 
         try:
             header_len = JSONArray[obj]['_source']['layers']['ip']['ip.hdr_len']
         except Exception:
-            header_len = "-"
+            header_len = None
 
         try:
             payload_len = JSONArray[obj]['_source']['layers']['udp']['udp.length']
             # TODO get other payload lenghts from other protocols too
         except Exception:
-            payload_len = "-"
+            payload_len = None
 
         try:
             frame_protocols = JSONArray[obj]['_source']['layers']['frame']['frame.protocols']
         except Exception:
-            frame_protocols = "-"
+            frame_protocols = None
 
         try:
             ip_protocols = JSONArray[obj]['_source']['layers']['ip']['ip.proto']
         except Exception:
-            ip_protocols = "-"
+            ip_protocols = None
 
         try:
             ip_flag_reserved_bit = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.rb']
         except Exception:
-            ip_flag_reserved_bit = "-"
+            ip_flag_reserved_bit = None
 
         try:
             ip_flag_dont_fragment = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.df']
         except Exception:
-            ip_flag_dont_fragment = "-"
+            ip_flag_dont_fragment = None
 
         try:
             ip_flag_more_fragments = JSONArray[obj]['_source']['layers']['ip']['ip.flags_tree']['ip.flags.mf']
         except Exception:
-            ip_flag_more_fragments = "-"
+            ip_flag_more_fragments = None
         
         try:
             ip_ttl = JSONArray[obj]['_source']['layers']['ip']['ip.ttl']
         except Exception:
-            ip_ttl = "-"
+            ip_ttl = None
 
         try:
             data_length = JSONArray[obj]['_source']['layers']['data']['data.len']
         except Exception:
-            data_length = "-"
+            data_length = None
 
         record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len, 
                 frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
