@@ -29,7 +29,7 @@ tshark -r input.pcap -T json > output.json"
 
 ## Usage
 
-To use in stand alone mode, clone the repository, uncomment the last line of python file and install the requirements
+To use in stand alone mode, clone the repository, uncomment the last line of [this python file](./json2csv.py) and install the [requirements](./requirements.txt)
 
 Or import it (e.g. `from json2csv import parse`)
 
