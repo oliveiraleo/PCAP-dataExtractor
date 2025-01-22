@@ -28,7 +28,9 @@ def parse(input_file_path, output_folder):
             'Data_length', 'QUIC_packet_length', 'QUIC_length']
 
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
-    new_file_name = output_folder + file_path_without_format + '.csv'
+    file_name_without_format = file_path_without_format.split("/")
+    file_name_without_format = file_name_without_format[len(file_name_without_format)-1] # get the clean file name only
+    new_file_name = output_folder + file_name_without_format + '.csv'
 
     df = pd.DataFrame(columns = labels)
     df.to_csv(new_file_name, header = True, index = False)
