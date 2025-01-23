@@ -1,6 +1,22 @@
 import json
 import pandas as pd
 import os
+import sys
+
+def progressBar(count_value, total, suffix=''):
+    """
+    A simple and tidy progress bar to track status
+    """
+    # Adapted from: https://www.geeksforgeeks.org/progress-bars-in-python/
+
+    bar_length = 25
+    filled_up_Length = int(round(bar_length* count_value / float(total)))
+    percentage = round(100.0 * count_value/float(total),1)
+    bar = '=' * filled_up_Length + ' ' * (bar_length - filled_up_Length)
+    sys.stdout.write('[%s] %s%s: %s\r' %(bar, percentage, '%', suffix))
+    # sys.stdout.flush() # not needed on bash
+    # if (percentage >= 100): # break line on finish, turns out to be inconsistent
+	#     sys.stdout.write('\n')
 
 def parse(input_file_path, output_folder):
     """
@@ -228,10 +244,12 @@ def parse(input_file_path, output_folder):
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_name, 'a', encoding='utf-8') as f:
-            print("[INFO] Writing dataframe", obj, "of", length, "(", round(obj*100/length, 1) ,"% ) to CSV")
+            # old way of reporting status, commented to avoiding flooding the stdout
+            # print("[INFO] Writing dataframe", obj, "of", length, "(", round(obj*100/length, 1) ,"% ) to CSV") 
+            progressBar(obj, length, f"Writing to {new_file_name}")
             df.to_csv(f, header=False, index = False)
             
-    print("[INFO] All", length, "records were successfully written")
+    print("\n[INFO] All", length, "records were successfully written")
     print("[DEBU] Columns of CSV are", list(df)) # DEBUG
 
 # parse("", "./") # Enable this line to run in "stand alone" mode (e.g. not importing as python module)
