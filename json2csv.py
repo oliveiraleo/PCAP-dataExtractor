@@ -46,10 +46,11 @@ def parse(input_file_path, output_folder):
     file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
     file_name_without_format = file_path_without_format.split("/")
     file_name_without_format = file_name_without_format[len(file_name_without_format)-1] # get the clean file name only
-    new_file_name = output_folder + file_name_without_format + '.csv'
+    new_file_name = file_name_without_format + '.csv'
+    new_file_with_path = output_folder + new_file_name
 
     df = pd.DataFrame(columns = labels)
-    df.to_csv(new_file_name, header = True, index = False)
+    df.to_csv(new_file_with_path, header = True, index = False)
     for obj in range(length):
 
         try:
@@ -243,10 +244,10 @@ def parse(input_file_path, output_folder):
                  ip_ttl, tcp_header_length, data_length, quic_packet_length, quic_length)]
 
         df = pd.DataFrame.from_records(record, columns=labels)
-        with open(new_file_name, 'a', encoding='utf-8') as f:
+        with open(new_file_with_path, 'a', encoding='utf-8') as f:
             # old way of reporting status, commented to avoiding flooding the stdout
             # print("[INFO] Writing dataframe", obj, "of", length, "(", round(obj*100/length, 1) ,"% ) to CSV") 
-            progressBar(obj, length, f"Writing to {new_file_name}")
+            progressBar(obj, length, f"Writing {new_file_name}")
             df.to_csv(f, header=False, index = False)
             
     print("\n[INFO] All", length, "records were successfully written")
