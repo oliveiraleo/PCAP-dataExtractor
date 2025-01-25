@@ -29,8 +29,14 @@ def parse(input_file_path, output_folder):
         print("[INFO] Please, provide the file path below")
         input_file_path = input("> ")
 
+    file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
+    file_name_without_format = file_path_without_format.split("/")
+    file_name_without_format = file_name_without_format[len(file_name_without_format)-1] # get the clean file name only
+    new_file_name = file_name_without_format + '.csv'
+    new_file_with_path = output_folder + new_file_name
+
     JSON_data=open(input_file_path).read()
-    print("[INFO] JSON file opened successfully")
+    print(f"[INFO] JSON file {file_name_without_format} opened successfully")
     JSONArray = json.loads(JSON_data)
     print("[INFO] JSON data imported successfully")
         
@@ -42,12 +48,6 @@ def parse(input_file_path, output_folder):
             'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_bin', 'TCP_flags_str', 'TCP_window_size', 'TCP_window_size_scale',
             'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'TCP_header_length',
             'Data_length', 'QUIC_packet_length', 'QUIC_length']
-
-    file_path_without_format = os.path.splitext(input_file_path)[0] # remove '.json' from old file name
-    file_name_without_format = file_path_without_format.split("/")
-    file_name_without_format = file_name_without_format[len(file_name_without_format)-1] # get the clean file name only
-    new_file_name = file_name_without_format + '.csv'
-    new_file_with_path = output_folder + new_file_name
 
     df = pd.DataFrame(columns = labels)
     df.to_csv(new_file_with_path, header = True, index = False)
