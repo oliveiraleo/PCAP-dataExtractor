@@ -41,7 +41,7 @@ def parse(input_file_path, output_folder):
     print("[INFO] JSON data imported successfully")
         
     length = len(JSONArray)
-    print("[DEBU]", length, "data frames to be converted") # DEBUG
+    print("[DEBU]", length, "data frames to be converted from", file_name_without_format) # DEBUG
 
     labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
             'Source_port', 'Destination_port', 'TCP_completeness', 'TCP_compl_reset', 'TCP_compl_fin', 'TCP_compl_data', 'TCP_compl_ack', 
@@ -250,7 +250,7 @@ def parse(input_file_path, output_folder):
             progressBar(obj, length, f"Writing {new_file_name}")
             df.to_csv(f, header=False, index = False)
             
-    print("\n[INFO] All", length, "records were successfully written")
+    print("\n[INFO] All", length, "records from", new_file_name, "were successfully written")
     # print("[DEBU] Columns of CSV are", list(df)) # DEBUG
 
 # parse("", "./") # Enable this line to run in "stand alone" mode (e.g. not importing as python module)
