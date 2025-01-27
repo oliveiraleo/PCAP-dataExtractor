@@ -132,6 +132,7 @@ def parse(input_file_path, output_folder, print_control=False):
         except Exception:
             tcp_completeness = None
         
+        # TODO forcibly convert these "completeness flags" to int or bool
         try:
             tcp_completeness_reset = JSONArray[obj]['_source']['layers']['tcp']['tcp.completeness_tree']['tcp.completeness.rst']
         except Exception:
