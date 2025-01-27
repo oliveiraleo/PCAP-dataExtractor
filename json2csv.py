@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import sys
 
-def progressBar(count_value, total, suffix=''):
+def progressBar(count_value, total, slow_print, suffix=''):
     """
     A simple and tidy progress bar to track status
     """
@@ -13,12 +13,20 @@ def progressBar(count_value, total, suffix=''):
     filled_up_Length = int(round(bar_length* count_value / float(total)))
     percentage = round(100.0 * count_value/float(total),1)
     bar = '=' * filled_up_Length + ' ' * (bar_length - filled_up_Length)
-    sys.stdout.write('[%s] %s%s: %s\r' %(bar, percentage, '%', suffix))
-    # sys.stdout.flush() # not needed on bash
-    # if (percentage >= 100): # break line on finish, turns out to be inconsistent
-	#     sys.stdout.write('\n')
+    
+    # This new way of printing improves when using parallelization
+    # if on slow mode and file is large, update for each 1k packets
+    # else if on slow mode and file is small, update for each 10 packets
+    # else if not on slow mode, update at every packet (the original way)
+    # else don't do anything (i.e. skip)
+    if (slow_print and total > 1000 and count_value % 1000 == 0):
+        sys.stdout.write('[%s] %s%s: %s\n' %(bar, percentage, '%', suffix))
+    elif (slow_print and total <= 1000 and count_value % 10 == 0):
+        sys.stdout.write('[%s] %s%s: %s\n' %(bar, percentage, '%', suffix))
+    elif (not slow_print):
+        sys.stdout.write('[%s] %s%s: %s\r' %(bar, percentage, '%', suffix))
 
-def parse(input_file_path, output_folder):
+def parse(input_file_path, output_folder, print_control=False):
     """
     A function to parse JSON PCAP-style files to a CSV format
     """
@@ -247,7 +255,7 @@ def parse(input_file_path, output_folder):
         with open(new_file_with_path, 'a', encoding='utf-8') as f:
             # old way of reporting status, commented to avoiding flooding the stdout
             # print("[INFO] Writing dataframe", obj, "of", length, "(", round(obj*100/length, 1) ,"% ) to CSV") 
-            progressBar(obj, length, f"Writing {new_file_name}")
+            progressBar(obj, length, print_control, f"Writing {new_file_name}")
             df.to_csv(f, header=False, index = False)
             
     print("\n[INFO] All", length, "records from", new_file_name, "were successfully written")
