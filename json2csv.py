@@ -16,10 +16,13 @@ def progressBar(count_value, total, slow_print, suffix=''):
     
     # This new way of printing improves when using parallelization
     # if on slow mode and file is large, update for each 1k packets
+    # if on slow mode and file is medium sized, update for each 100 packets
     # else if on slow mode and file is small, update for each 10 packets
     # else if not on slow mode, update at every packet (the original way)
     # else don't do anything (i.e. skip)
-    if (slow_print and total > 1000 and count_value % 1000 == 0):
+    if (slow_print and total >= 10000 and count_value % 1000 == 0):
+        sys.stdout.write('[%s] %s%s: %s\n' %(bar, percentage, '%', suffix))
+    elif (slow_print and total > 1000 and total < 10000 and count_value % 100 == 0):
         sys.stdout.write('[%s] %s%s: %s\n' %(bar, percentage, '%', suffix))
     elif (slow_print and total <= 1000 and count_value % 10 == 0):
         sys.stdout.write('[%s] %s%s: %s\n' %(bar, percentage, '%', suffix))
