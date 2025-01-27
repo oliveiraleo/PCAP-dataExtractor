@@ -51,11 +51,11 @@ def parse(input_file_path, output_folder, print_control=False):
     length = len(JSONArray)
     print("[DEBU]", length, "data frames to be converted from", file_name_without_format) # DEBUG
 
-    labels = ['Packet_no', 'Timestamp', 'Time_delta', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
-            'Source_port', 'Destination_port', 'TCP_completeness', 'TCP_compl_reset', 'TCP_compl_fin', 'TCP_compl_data', 'TCP_compl_ack', 
-            'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_bin', 'TCP_flags_str', 'TCP_window_size', 'TCP_window_size_scale',
-            'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'TCP_header_length',
-            'Data_length', 'QUIC_packet_length', 'QUIC_length']
+    labels = ['Packet_no','Timestamp','Time_delta','Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length',
+            'Frame_payload_length','Source_port','Destination_port','TCP_completeness','TCP_compl_reset','TCP_compl_fin','TCP_compl_data',
+            'TCP_compl_ack','TCP_compl_syn_ack','TCP_compl_syn','TCP_compl_str','TCP_flags_bin','TCP_flags_str','TCP_window_size',
+            'TCP_window_size_scale','Frame_protocols','IP_protocols','IP_flag_reserved_bit','IP_flag_dont_fragment','IP_flag_more_fragments',
+            'TTL', 'TCP_header_length','Data_length','QUIC_packet_length','QUIC_length']
 
     df = pd.DataFrame(columns = labels)
     df.to_csv(new_file_with_path, header = True, index = False)
@@ -249,12 +249,13 @@ def parse(input_file_path, output_folder, print_control=False):
             quic_length = None
         # QUIC only end #
 
-        record = [(pkt_number, timestamp, time_since_last_pkt, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
-                src_port, dst_port, tcp_completeness, tcp_completeness_reset, tcp_completeness_fin,
-                tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, tcp_completeness_syn,
-                tcp_completeness_str, tcp_flags_bin, tcp_flags_str, tcp_window_size, tcp_window_size_scalefactor,
-                frame_protocols, ip_protocols, ip_flag_reserved_bit, ip_flag_dont_fragment, ip_flag_more_fragments,
-                 ip_ttl, tcp_header_length, data_length, quic_packet_length, quic_length)]
+        record = [(pkt_number, timestamp, time_since_last_pkt, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, 
+                header_len, payload_len, src_port, dst_port, tcp_completeness, tcp_completeness_reset, 
+                tcp_completeness_fin, tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, 
+                tcp_completeness_syn, tcp_completeness_str, tcp_flags_bin, tcp_flags_str, tcp_window_size, 
+                tcp_window_size_scalefactor, frame_protocols, ip_protocols, ip_flag_reserved_bit, 
+                ip_flag_dont_fragment, ip_flag_more_fragments, ip_ttl, tcp_header_length, data_length, 
+                quic_packet_length, quic_length)]
 
         df = pd.DataFrame.from_records(record, columns=labels)
         with open(new_file_with_path, 'a', encoding='utf-8') as f:
