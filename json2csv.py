@@ -51,7 +51,7 @@ def parse(input_file_path, output_folder, print_control=False):
     length = len(JSONArray)
     print("[DEBU]", length, "data frames to be converted from", file_name_without_format) # DEBUG
 
-    labels = ['Packet_no', 'Timestamp', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
+    labels = ['Packet_no', 'Timestamp', 'Time_delta', 'Source_IP','Destination_IP','Frame_type','Frame_total_length','Frame_header_length', 'Frame_payload_length',
             'Source_port', 'Destination_port', 'TCP_completeness', 'TCP_compl_reset', 'TCP_compl_fin', 'TCP_compl_data', 'TCP_compl_ack', 
             'TCP_compl_syn_ack', 'TCP_compl_syn', 'TCP_compl_str', 'TCP_flags_bin', 'TCP_flags_str', 'TCP_window_size', 'TCP_window_size_scale',
             'Frame_protocols', 'IP_protocols', 'IP_flag_reserved_bit', 'IP_flag_dont_fragment', 'IP_flag_more_fragments', 'TTL', 'TCP_header_length',
@@ -70,6 +70,11 @@ def parse(input_file_path, output_folder, print_control=False):
             timestamp = JSONArray[obj]['_source']['layers']['frame']['frame.time_relative']
         except Exception:
             timestamp = None
+
+        try:
+            time_since_last_pkt = JSONArray[obj]['_source']['layers']['frame']['frame.time_delta']
+        except Exception:
+            time_since_last_pkt = None
 
         try:
              ipv4_ip_src = JSONArray[obj]['_source']['layers']['ip']['ip.src']
@@ -244,7 +249,7 @@ def parse(input_file_path, output_folder, print_control=False):
             quic_length = None
         # QUIC only end #
 
-        record = [(pkt_number, timestamp, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
+        record = [(pkt_number, timestamp, time_since_last_pkt, ipv4_ip_src, ipv4_ip_dst, frame_type, frame_len, header_len, payload_len,
                 src_port, dst_port, tcp_completeness, tcp_completeness_reset, tcp_completeness_fin,
                 tcp_completeness_data, tcp_completeness_ack, tcp_completeness_syn_ack, tcp_completeness_syn,
                 tcp_completeness_str, tcp_flags_bin, tcp_flags_str, tcp_window_size, tcp_window_size_scalefactor,
