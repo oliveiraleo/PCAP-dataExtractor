@@ -3,6 +3,20 @@ import pandas as pd
 import os
 import sys
 
+def swap_special_chars_to_underscore(input_string):
+    result = '' # to store the output
+    
+    # Check if the character is alphanumeric
+    # If alphanumeric, add the character to the result string
+    # If not alphanumeric, add an underscore to the result string
+    for char in input_string:
+        if char.isalnum():
+            result += char
+        else:
+            result += '_'
+    
+    return result
+
 def progressBar(count_value, total, slow_print, suffix=''):
     """
     A simple and tidy progress bar to track status
@@ -170,6 +184,7 @@ def parse(input_file_path, output_folder, print_control=False):
             tcp_completeness_str = JSONArray[obj]['_source']['layers']['tcp']['tcp.completeness_tree']['tcp.completeness.str']
             # if (tcp_completeness_str == "[ Null ]"): # TODO check if this won't break anything
             #     tcp_completeness_str = None
+            tcp_completeness_str = ''.join(filter(str.isalnum, tcp_completeness_str))
         except Exception:
             tcp_completeness_str = None
 
@@ -183,6 +198,7 @@ def parse(input_file_path, output_folder, print_control=False):
         
         try:
             tcp_flags_str = JSONArray[obj]['_source']['layers']['tcp']['tcp.flags_tree']['tcp.flags.str']
+            tcp_flags_str = ''.join(filter(str.isalnum, tcp_flags_str))
         except Exception:
             tcp_flags_str = None
 
@@ -199,6 +215,9 @@ def parse(input_file_path, output_folder, print_control=False):
 
         try:
             frame_protocols = JSONArray[obj]['_source']['layers']['frame']['frame.protocols']
+            frame_protocols = ''.join(filter(str.isalnum, frame_protocols))
+            # filter just erases all special chars, to keep the strings human readable, it's better to swap the chars instead
+            # frame_protocols = swap_special_chars_to_underscore(frame_protocols) # TODO test the performance of using this function
         except Exception:
             frame_protocols = None
 
