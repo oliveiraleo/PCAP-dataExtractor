@@ -107,7 +107,7 @@ def parse(input_file_path, output_folder, print_control=False):
             frame_type = JSONArray[obj]['_source']['layers']['frame']['frame.encap_type']
         except Exception:
             frame_type = None
-            # more info on that: https://gitlab.com/wireshark/wireshark/-/blame/master/wiretap/wtap.h#L87
+            # more info on that: https://gitlab.com/wireshark/wireshark/-/blob/master/wiretap/wtap.h#L87
 
         try:
             frame_len = JSONArray[obj]['_source']['layers']['frame']['frame.len']
